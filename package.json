@@ -1,0 +1,32 @@
+{
+  "name": "pushbullet-log",
+  "version": "0.1.0",
+  "description": "Receive console messages from nodejs as push notifications via pushbullet",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap testing/test_*.js --100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ferm10n/pushbullet-log.git"
+  },
+  "keywords": [
+    "push",
+    "notification",
+    "console",
+    "log",
+    "pushbullet"
+  ],
+  "author": "John Sanders <me@johnsanders.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ferm10n/pushbullet-log/issues"
+  },
+  "homepage": "https://github.com/ferm10n/pushbullet-log#readme",
+  "engines": {
+    "node": ">=8.1.4"
+  },
+  "devDependencies": {
+    "tap": "^10.7.1"
+  }
+}
