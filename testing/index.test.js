@@ -1,13 +1,37 @@
 import test from 'ava'
-const PushLog = require('../index')
-
-function freshlyRequire (m) {
-  delete require.cache[require.resolve(m)]
-  return require(m)
+const PL = require('../index')
+const testOpts = {
+  token: 'test',
+  channel: 'test'
 }
 
+test('required options', t => {
+  t.notThrows(() => {
+    return new PL({
+      token: 'test',
+      channel: 'test'
+    })
+  }, 'correct options')
+
+  t.throws(() => {
+    return new PL()
+  }, Error, 'no options')
+
+  t.throws(() => {
+    return new PL({
+      channel: 'test'
+    })
+  }, Error, 'missing token')
+
+  t.throws(() => {
+    return new PL({
+      token: 'test'
+    })
+  }, Error, 'missing channel')
+})
+
 test('does nothing when nothing is logged', t => {
-  const pl = new PushLog()
+  const pl = new PL(testOpts)
   pl.makePush = () => { t.fail('should not have acted') }
   pl.log()
   pl.warn()
@@ -17,7 +41,7 @@ test('does nothing when nothing is logged', t => {
 
 test('severity is set', t => {
   t.plan(3)
-  const pblog = new PushLog()
+  const pblog = new PL(testOpts)
 
   pblog.makePush = (l, m, s) => { t.is(s, 'LOG') }
   pblog.log('test')
@@ -31,13 +55,13 @@ test('severity is set', t => {
 
 test('usage forms', t => {
   t.plan(8)
-  let pl = new PushLog()
+  let pl = new PL(testOpts)
 
   pl.makePush = (title, message) => {
     t.is(title, 'LOG: ')
-    t.is(message.replace(/\s/mgi,''), '{"a":"b"}')
+    t.is(message.replace(/\s/mgi, ''), '{"a":"b"}')
   }
-  pl.log({a:'b'}) // LOG, {"a":"b"}
+  pl.log({a: 'b'}) // LOG, {"a":"b"}
 
   pl.makePush = (title, message) => {
     t.is(title, 'LOG: test')

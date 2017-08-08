@@ -1,16 +1,19 @@
 // const https = require('https')
+const assert = require('assert')
 
 class PushbulletLog {
   constructor (opts = {
     prependDate: true
   }) {
     this.prependDate = !!opts.prependDate
+    assert.ok(opts.token, 'Token is required')
+    assert.ok(opts.channel, 'Token is required')
   }
   pushConsole (severity, thingsToLog) {
     let title = severity + ': '
     let messageArray = []
 
-    if (thingsToLog.length === 0) return;
+    if (thingsToLog.length === 0) return
 
     if (typeof thingsToLog[0] === 'string') title += thingsToLog.shift()
 
