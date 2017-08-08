@@ -31,8 +31,9 @@ class PushbulletLog {
         messageArray.push(JSON.stringify(thingToLog))
       } else messageArray.push(String(thingToLog))
     }
-
-    this.makePush(title, messageArray.join(', '), severity)
+    let messageString = messageArray.join(', ')
+    if (this.prependDate) messageString = Date().toString() + '\n' + messageString
+    this.makePush(title, messageString, severity)
   }
   makePush (title, message, severity) {
     const opts = {

@@ -1,14 +1,17 @@
 import test from 'ava'
 const PL = require('../index')
 
-test('required options', t => {
-  t.notThrows(() => {
-    return new PL({
-      token: 'test',
-      channel: 'test'
-    })
-  }, 'correct options')
+test('defaults', t => {
+  const p = new PL({
+    token: 'test',
+    channel: 'logChannel'
+  })
+  t.false(p.prependDate)
+  t.is(p.channels.warn, 'logChannel', 'default warn channel is log channel')
+  t.is(p.channels.error, 'logChannel', 'default error channel is log channel')
+})
 
+test('required options', t => {
   t.notThrows(() => {
     return new PL({
       token: 'test',
@@ -49,17 +52,20 @@ test('channels', t => {
   t.is(p.channels.log, 'logChannel')
   t.is(p.channels.warn, 'warnChannel')
   t.is(p.channels.error, 'errorChannel')
-
-  p = new PL({
-    token: 'testToken',
-    channel: 'logChannel'
-  })
-  t.is(p.token, 'testToken', 'token is set')
-  t.is(p.channels.warn, 'logChannel', 'default warn channel is log channel')
-  t.is(p.channels.error, 'logChannel', 'default error channel is log channel')
 })
 
-// test('enabling prependDate prepends the date', t => {
-//   const pblog = freshlyRequire('../index')
-//   pblog.
-// })
+test('prependDate', t => {
+  t.plan(3)
+  const p = new PL({
+    token: 'testToken',
+    channel: 'testChannel',
+    prependDate: true
+  })
+  t.true(p.prependDate, 'set')
+  p.makePush = (title, message) => {
+    const split = message.split('\n')
+    t.is(split[1], 'stuff', 'original message')
+    t.is(new Date(split[0]).toString(), split[0], 'date present')
+  }
+  p.log('test', 'stuff')
+})

@@ -6,17 +6,14 @@ function freshlyRequire (m) {
 }
 
 test('https request', t => {
-  let options
-  let payload
-  let end = false
   const mockRequest = (opts, rcb) => {
     rcb({
       on: (type, handler) => { handler() }
     })
-    options = opts
+    mockRequest.options = opts
     return {
-      write: data => { payload = data },
-      end: () => { end = true }
+      write: data => { mockRequest.payload = data },
+      end: () => { mockRequest.end = true }
     }
   }
   freshlyRequire('https').request = mockRequest
@@ -26,7 +23,7 @@ test('https request', t => {
     channel: 'logChannel'
   })
   p.log('testTitle', 'testBody')
-  t.deepEqual(options, {
+  t.deepEqual(mockRequest.options, {
     host: 'api.pushbullet.com',
     path: '/v2/pushes',
     port: '443',
@@ -36,9 +33,9 @@ test('https request', t => {
       'Content-Type': 'application/json'
     }
   }, 'expected https options')
-  t.true(end, 'request was ended')
-  t.is(typeof payload, 'string')
-  const parsedPayload = JSON.parse(payload)
+  t.true(mockRequest.end, 'request was ended')
+  t.is(typeof mockRequest.payload, 'string')
+  const parsedPayload = JSON.parse(mockRequest.payload)
   t.deepEqual(parsedPayload, {
     body: 'testBody',
     title: 'LOG: testTitle',
@@ -46,3 +43,7 @@ test('https request', t => {
     channel_tag: 'logChannel'
   })
 })
+
+// test('awaits completion', t => {
+//
+// })
