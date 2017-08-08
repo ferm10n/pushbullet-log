@@ -5,13 +5,6 @@ const testOpts = {
   channel: 'test'
 }
 
-test('nyc', t => {
-  t.throws(() => {
-    const p = new PL(testOpts)
-    p.log('test')
-  })
-})
-
 test('does nothing when nothing is logged', t => {
   const pl = new PL(testOpts)
   pl.makePush = () => { t.fail('should not have acted') }

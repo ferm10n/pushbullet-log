@@ -1,4 +1,4 @@
-// const https = require('https')
+const https = require('https')
 const assert = require('assert')
 
 class PushbulletLog {
@@ -7,6 +7,7 @@ class PushbulletLog {
   }) {
     this.prependDate = !!opts.prependDate
     assert.ok(opts.token, 'Token is required')
+    this.token = opts.token
 
     // determine channels
     if (!opts.channels) opts.channels = {}
@@ -34,7 +35,29 @@ class PushbulletLog {
     this.makePush(title, messageArray.join(', '), severity)
   }
   makePush (title, message, severity) {
-    throw new Error('nope')
+    const opts = {
+      host: 'api.pushbullet.com',
+      path: '/v2/pushes',
+      port: '443',
+      method: 'POST',
+      headers: {
+        'Access-Token': this.token,
+        'Content-Type': 'application/json'
+      }
+    }
+    const payload = {
+      type: 'note',
+      title: title,
+      body: message,
+      channel_tag: this.channels[severity.toLowerCase()]
+    }
+    const req = https.request(opts, response => {
+      response.on('data', () => {}) // needed for the other events to fire for some reason
+      response.on('error', () => {})
+      response.on('end', () => {})
+    })
+    req.write(JSON.stringify(payload))
+    req.end()
   }
 
   log () { this.pushConsole('LOG', [].slice.call(arguments)) }
