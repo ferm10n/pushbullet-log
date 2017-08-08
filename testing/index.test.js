@@ -5,29 +5,11 @@ const testOpts = {
   channel: 'test'
 }
 
-test('required options', t => {
-  t.notThrows(() => {
-    return new PL({
-      token: 'test',
-      channel: 'test'
-    })
-  }, 'correct options')
-
+test('nyc', t => {
   t.throws(() => {
-    return new PL()
-  }, Error, 'no options')
-
-  t.throws(() => {
-    return new PL({
-      channel: 'test'
-    })
-  }, Error, 'missing token')
-
-  t.throws(() => {
-    return new PL({
-      token: 'test'
-    })
-  }, Error, 'missing channel')
+    const p = new PL(testOpts)
+    p.log('test')
+  })
 })
 
 test('does nothing when nothing is logged', t => {
@@ -81,8 +63,3 @@ test('usage forms', t => {
   }
   pl.log('test', 5, 5) // LOG: test, '5, 5'
 })
-
-// test('enabling prependDate prepends the date', t => {
-//   const pblog = freshlyRequire('../index')
-//   pblog.
-// })

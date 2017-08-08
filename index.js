@@ -7,7 +7,14 @@ class PushbulletLog {
   }) {
     this.prependDate = !!opts.prependDate
     assert.ok(opts.token, 'Token is required')
-    assert.ok(opts.channel, 'Token is required')
+
+    // determine channels
+    if (!opts.channels) opts.channels = {}
+    if (opts.channel && !opts.channels.log) opts.channels.log = opts.channel
+    assert.ok(opts.channels.log, 'Log channel is required')
+    if (!opts.channels.warn) opts.channels.warn = opts.channels.log
+    if (!opts.channels.error) opts.channels.error = opts.channels.log
+    this.channels = opts.channels // apply
   }
   pushConsole (severity, thingsToLog) {
     let title = severity + ': '
