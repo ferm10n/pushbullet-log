@@ -5,6 +5,7 @@ class PushbulletLog {
   constructor (opts = {
     prependDate: true
   }) {
+    this.compact = !opts.compact
     this.prependDate = !!opts.prependDate
     assert.ok(opts.token, 'Token is required')
     this.token = opts.token
@@ -17,6 +18,7 @@ class PushbulletLog {
     if (!opts.channels.error) opts.channels.error = opts.channels.log
     this.channels = opts.channels // apply
   }
+
   pushConsole (severity, thingsToLog) {
     let title = severity + ': '
     let messageArray = []
@@ -25,16 +27,18 @@ class PushbulletLog {
 
     if (typeof thingsToLog[0] === 'string') title += thingsToLog.shift()
 
+    const spacing = this.compact ? '' : '  '
     while (thingsToLog.length > 0) {
       const thingToLog = thingsToLog.shift()
       if (typeof thingToLog === 'object') {
-        messageArray.push(JSON.stringify(thingToLog))
+        messageArray.push(JSON.stringify(thingToLog, null, spacing))
       } else messageArray.push(String(thingToLog))
     }
     let messageString = messageArray.join(', ')
     if (this.prependDate) messageString = Date().toString() + '\n' + messageString
     this.makePush(title, messageString, severity)
   }
+
   makePush (title, message, severity) {
     const opts = {
       host: 'api.pushbullet.com',
@@ -57,6 +61,7 @@ class PushbulletLog {
       response.on('error', () => {})
       response.on('end', () => {})
     })
+
     req.write(JSON.stringify(payload))
     req.end()
   }

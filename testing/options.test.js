@@ -9,6 +9,7 @@ test('defaults', t => {
   t.false(p.prependDate)
   t.is(p.channels.warn, 'logChannel', 'default warn channel is log channel')
   t.is(p.channels.error, 'logChannel', 'default error channel is log channel')
+  t.true(p.compact)
 })
 
 test('required options', t => {
@@ -61,11 +62,24 @@ test('prependDate', t => {
     channel: 'testChannel',
     prependDate: true
   })
-  t.true(p.prependDate, 'set')
+  t.true(p.prependDate)
   p.makePush = (title, message) => {
     const split = message.split('\n')
     t.is(split[1], 'stuff', 'original message')
     t.is(new Date(split[0]).toString(), split[0], 'date present')
   }
   p.log('test', 'stuff')
+})
+
+test('compact', t => {
+  t.plan(1)
+  const p = new PL({
+    token: 'testToken',
+    channel: 'testChannel',
+    compact: true
+  })
+  p.makePush = (title, message) => {
+    t.is(message, '{\n  "a": "b"\n}')
+  }
+  p.log({a: 'b'})
 })
