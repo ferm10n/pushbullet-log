@@ -9,7 +9,8 @@ test('defaults', t => {
   t.false(p.prependDate)
   t.is(p.channels.warn, 'logChannel', 'default warn channel is log channel')
   t.is(p.channels.error, 'logChannel', 'default error channel is log channel')
-  t.true(p.compact)
+  t.false(p.compact)
+  t.true(p.useConsole)
 })
 
 test('required options', t => {
@@ -79,7 +80,18 @@ test('compact', t => {
     compact: true
   })
   p.makePush = (title, message) => {
-    t.is(message, '{\n  "a": "b"\n}')
+    t.is(message, '{"a":"b"}')
   }
   p.log({a: 'b'})
 })
+
+// test('useConsole', t => {
+//   t.plan(4)
+//
+//   const p = new PL({
+//     token: 'testToken',
+//     channel: 'testChannel',
+//     useConsole: true
+//   })
+//   t.true(p.useConsole)
+// })

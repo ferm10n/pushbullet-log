@@ -5,18 +5,25 @@ class PushbulletLog {
   constructor (opts = {
     prependDate: true
   }) {
-    this.compact = !opts.compact
-    this.prependDate = !!opts.prependDate
-    assert.ok(opts.token, 'Token is required')
-    this.token = opts.token
+    const defaults = {
+      useConsole: true,
+      compact: false,
+      prependDate: false
+    }
+    opts = Object.assign(defaults, opts)
 
-    // determine channels
+    assert.ok(opts.token, 'Token is required')
+
     if (!opts.channels) opts.channels = {}
     if (opts.channel && !opts.channels.log) opts.channels.log = opts.channel
     assert.ok(opts.channels.log, 'Log channel is required')
+
     if (!opts.channels.warn) opts.channels.warn = opts.channels.log
     if (!opts.channels.error) opts.channels.error = opts.channels.log
-    this.channels = opts.channels // apply
+
+    // opts now has all needed values
+
+    Object.assign(this, opts)
   }
 
   pushConsole (severity, thingsToLog) {
