@@ -27,6 +27,9 @@ class PushbulletLog {
   }
 
   pushConsole (severity, thingsToLog) {
+    if (this.useConsole) {
+      console[severity.toLowerCase()].apply(console, thingsToLog)
+    }
     let title = severity + ': '
     let messageArray = []
 

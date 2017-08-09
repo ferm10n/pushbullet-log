@@ -2,7 +2,8 @@ import test from 'ava'
 const PL = require('../index')
 const testOpts = {
   token: 'test',
-  channel: 'test'
+  channel: 'test',
+  useConsole: false
 }
 
 test('does nothing when nothing is logged', t => {

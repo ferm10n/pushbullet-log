@@ -61,7 +61,8 @@ test('prependDate', t => {
   const p = new PL({
     token: 'testToken',
     channel: 'testChannel',
-    prependDate: true
+    prependDate: true,
+    useConsole: false
   })
   t.true(p.prependDate)
   p.makePush = (title, message) => {
@@ -77,7 +78,8 @@ test('compact', t => {
   const p = new PL({
     token: 'testToken',
     channel: 'testChannel',
-    compact: true
+    compact: true,
+    useConsole: false
   })
   p.makePush = (title, message) => {
     t.is(message, '{"a":"b"}')
@@ -85,13 +87,25 @@ test('compact', t => {
   p.log({a: 'b'})
 })
 
-// test('useConsole', t => {
-//   t.plan(4)
-//
-//   const p = new PL({
-//     token: 'testToken',
-//     channel: 'testChannel',
-//     useConsole: true
-//   })
-//   t.true(p.useConsole)
-// })
+test('useConsole', t => {
+  t.plan(4)
+
+  // const oldLog = console.log
+  // const oldWarn = console.warn
+  // const oldError = console.error
+
+  console.log = l => { t.is(l, 'test log') }
+  console.warn = w => { t.is(w, 'test warn') }
+  console.error = e => { t.is(e, 'test error') }
+
+  const p = new PL({
+    token: 'testToken',
+    channel: 'testChannel',
+    useConsole: true
+  })
+  p.makePush = () => {}
+  t.true(p.useConsole)
+  p.log('test log')
+  p.warn('test warn')
+  p.error('test error')
+})

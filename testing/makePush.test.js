@@ -20,7 +20,8 @@ test('https request', t => {
   const PL = freshlyRequire('../index')
   const p = new PL({
     token: 'testToken',
-    channel: 'logChannel'
+    channel: 'logChannel',
+    useConsole: false
   })
   p.log('testTitle', 'testBody')
   t.deepEqual(mockRequest.options, {
