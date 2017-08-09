@@ -4,7 +4,7 @@
   "description": "Receive console messages from nodejs as push notifications via pushbullet",
   "main": "index.js",
   "scripts": {
-    "test": "tap testing/test_*.js --100 && ava"
+    "test": "nyc --statements 100 --branches 100 --functions 100 --lines 100 ava"
   },
   "repository": {
     "type": "git",
@@ -28,8 +28,14 @@
   },
   "devDependencies": {
     "ava": "^0.21.0",
-    "nyc": "^11.1.0",
-    "tap": "^10.7.1"
+    "nyc": "^11.1.0"
+  },
+  "nyc": {
+    "check-coverage": true,
+    "lines": 100,
+    "statements": 100,
+    "functions": 100,
+    "branches": 100
   },
   "standard": {
     "env": [
