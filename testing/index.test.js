@@ -84,6 +84,13 @@ test('overrideConsole', t => {
   console.error = oldError
 })
 
-// test('error stack', t => {
-//   const p = new PL({})
-// })
+test('error stack', t => {
+  const p = new PL(testOpts)
+  p.makePush = (l, m, s) => {
+    const splitMessage = m.split('\n')
+    t.truthy(splitMessage.length > 1)
+    t.is(splitMessage[0], 'Error: test error')
+    t.is(splitMessage[1].trim().split(' ')[0], 'at')
+  }
+  p.error(new Error('test error'))
+})

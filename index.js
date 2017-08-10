@@ -45,7 +45,8 @@ class PushbulletLog {
 
     const spacing = this.compact ? '' : '  '
     while (thingsToLog.length > 0) {
-      const thingToLog = thingsToLog.shift()
+      let thingToLog = thingsToLog.shift()
+      if (thingToLog instanceof Error) thingToLog = thingToLog.stack // stack is what matters, not the error object
       if (typeof thingToLog === 'object') {
         messageArray.push(JSON.stringify(thingToLog, null, spacing))
       } else messageArray.push(String(thingToLog))
