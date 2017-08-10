@@ -5,19 +5,24 @@ function freshlyRequire (m) {
   return require(m)
 }
 
-test('https request', t => {
-  const mockRequest = (opts, rcb) => {
-    mockRequest.payload = null
-    mockRequest.end = false
-    rcb({
-      on: (type, handler) => { handler() }
-    })
-    mockRequest.options = opts
-    return {
-      write: data => { mockRequest.payload = data },
-      end: () => { mockRequest.end = true }
+const mockRequest = (opts, rcb) => {
+  mockRequest.payload = null
+  mockRequest.end = false
+  mockRequest.listeners = {}
+  rcb({
+    on: (type, handler) => {
+      if (type === 'data') handler()
+      else mockRequest.listeners[type] = handler
     }
+  })
+  mockRequest.options = opts
+  return {
+    write: data => { mockRequest.payload = data },
+    end: () => { mockRequest.end = true }
   }
+}
+
+test('https request', t => {
   freshlyRequire('https').request = mockRequest
   const PL = freshlyRequire('../index')
   const p = new PL({
@@ -47,6 +52,19 @@ test('https request', t => {
   })
 })
 
-// test('awaits completion', t => {
-//
-// })
+test('awaits completion', t => {
+  freshlyRequire('https').request = mockRequest
+  const PL = freshlyRequire('../index')
+  const p = new PL({
+    token: 'test',
+    channel: 'test',
+    useConsole: false
+  })
+
+  const logPromise = p.log('test')
+  t.is(logPromise.toString(), '[object Promise]')
+  setTimeout(() => {
+    mockRequest.listeners.end()
+  }, 10)
+  return logPromise
+})

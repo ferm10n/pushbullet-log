@@ -51,10 +51,12 @@ class PushbulletLog {
     }
     let messageString = messageArray.join(', ')
     if (this.prependDate) messageString = Date().toString() + '\n' + messageString
-    this.makePush(title, messageString, severity)
+    return this.makePush(title, messageString, severity)
   }
 
   makePush (title, message, severity) {
+    let logResolution
+    const logPromise = new Promise(resolve => { logResolution = resolve })
     const opts = {
       host: 'api.pushbullet.com',
       path: '/v2/pushes',
@@ -74,11 +76,12 @@ class PushbulletLog {
     const req = https.request(opts, response => {
       response.on('data', () => {}) // needed for the other events to fire for some reason
       response.on('error', () => {})
-      response.on('end', () => {})
+      response.on('end', logResolution)
     })
 
     req.write(JSON.stringify(payload))
     req.end()
+    return logPromise
   }
 
   overrideConsole () {
@@ -88,9 +91,9 @@ class PushbulletLog {
     console.error = function () { self.error.apply(self, arguments) }
   }
 
-  log () { this.pushConsole('LOG', [].slice.call(arguments)) }
-  warn () { this.pushConsole('WARN', [].slice.call(arguments)) }
-  error () { this.pushConsole('ERROR', [].slice.call(arguments)) }
+  log () { return this.pushConsole('LOG', [].slice.call(arguments)) }
+  warn () { return this.pushConsole('WARN', [].slice.call(arguments)) }
+  error () { return this.pushConsole('ERROR', [].slice.call(arguments)) }
 }
 
 module.exports = PushbulletLog
