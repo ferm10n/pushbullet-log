@@ -7,6 +7,8 @@ function freshlyRequire (m) {
 
 test('https request', t => {
   const mockRequest = (opts, rcb) => {
+    mockRequest.payload = null
+    mockRequest.end = false
     rcb({
       on: (type, handler) => { handler() }
     })
