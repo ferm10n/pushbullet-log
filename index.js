@@ -75,7 +75,10 @@ class PushbulletLog {
     }
     const req = https.request(opts, response => {
       response.on('data', () => {}) // needed for the other events to fire for some reason
-      response.on('error', () => {})
+      response.on('error', err => {
+        this.originalConsole.error(err)
+        logResolution()
+      })
       response.on('end', logResolution)
     })
 
