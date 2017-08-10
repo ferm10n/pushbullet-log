@@ -107,5 +107,6 @@ class PushbulletLog {
   error () { return this.pushConsole('ERROR', [].slice.call(arguments)) }
 }
 PushbulletLog._dns = dns
+PushbulletLog._request = https.request
 
 module.exports = PushbulletLog

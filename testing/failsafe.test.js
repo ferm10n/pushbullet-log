@@ -1,10 +1,10 @@
 import test from 'ava'
-import { mockRequest, freshlyRequire } from './utils.js'
+import mockRequest from './utils.js'
+const PL = require('../index')
 
 test('pushbullet error', t => {
-  freshlyRequire('https').request = mockRequest
-  const PL = freshlyRequire('../index')
   PL._dns = { lookup: (domain, cb) => { cb() } }
+  PL._request = mockRequest()
   const p = new PL({
     token: 'test',
     channel: 'test',
