@@ -88,11 +88,11 @@ test('compact', t => {
 })
 
 test('useConsole', t => {
-  t.plan(4)
+  t.plan(7)
 
-  // const oldLog = console.log
-  // const oldWarn = console.warn
-  // const oldError = console.error
+  const oldLog = console.log
+  const oldWarn = console.warn
+  const oldError = console.error
 
   console.log = l => { t.is(l, 'test log') }
   console.warn = w => { t.is(w, 'test warn') }
@@ -108,4 +108,12 @@ test('useConsole', t => {
   p.log('test log')
   p.warn('test warn')
   p.error('test error')
+
+  t.is(console.log, p.originalConsole.log)
+  t.is(console.warn, p.originalConsole.warn)
+  t.is(console.error, p.originalConsole.error)
+
+  console.log = oldLog
+  console.warn = oldWarn
+  console.error = oldError
 })

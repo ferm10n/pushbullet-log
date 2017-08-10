@@ -8,7 +8,12 @@ class PushbulletLog {
     const defaults = {
       useConsole: true,
       compact: false,
-      prependDate: false
+      prependDate: false,
+      originalConsole: {
+        log: console.log,
+        warn: console.warn,
+        error: console.error
+      }
     }
     opts = Object.assign(defaults, opts)
 
@@ -28,7 +33,7 @@ class PushbulletLog {
 
   pushConsole (severity, thingsToLog) {
     if (this.useConsole) {
-      console[severity.toLowerCase()].apply(console, thingsToLog)
+      this.originalConsole[severity.toLowerCase()].apply(console, thingsToLog)
     }
     let title = severity + ': '
     let messageArray = []
@@ -74,6 +79,13 @@ class PushbulletLog {
 
     req.write(JSON.stringify(payload))
     req.end()
+  }
+
+  overrideConsole () {
+    const self = this
+    console.log = function () { self.log.apply(self, arguments) }
+    console.warn = function () { self.warn.apply(self, arguments) }
+    console.error = function () { self.error.apply(self, arguments) }
   }
 
   log () { this.pushConsole('LOG', [].slice.call(arguments)) }

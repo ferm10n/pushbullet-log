@@ -57,3 +57,29 @@ test('usage forms', t => {
   }
   pl.log('test', 5, 5) // LOG: test, '5, 5'
 })
+
+test('overrideConsole', t => {
+  const oldLog = console.log
+  const oldWarn = console.warn
+  const oldError = console.error
+
+  const p = new PL({
+    token: 'test',
+    channel: 'test'
+  })
+
+  t.plan(5)
+
+  p.overrideConsole()
+
+  t.not(console.log, oldLog, 'console was overridden')
+  t.is(p.originalConsole.log, oldLog, 'original console intact')
+
+  p.originalConsole.log = item => { t.is(item, 'test log') }
+  p.originalConsole.warn = item => { t.is(item, 'test warn') }
+  p.originalConsole.error = item => { t.is(item, 'test error') }
+
+  console.log('test log')
+  console.warn('test warn')
+  console.error('test error')
+})
