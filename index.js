@@ -9,14 +9,15 @@ class PushbulletLog {
     const defaults = {
       useConsole: true,
       compact: false,
-      prependDate: false,
+      prependDate: false
+    }
+    opts = Object.assign(defaults, opts, {
       originalConsole: {
         log: console.log,
         warn: console.warn,
         error: console.error
       }
-    }
-    opts = Object.assign(defaults, opts)
+    })
 
     assert.ok(opts.token, 'Token is required')
 
