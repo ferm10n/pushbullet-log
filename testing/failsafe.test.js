@@ -1,5 +1,5 @@
 import test from 'ava'
-import mockRequest from './utils.js'
+const mockRequest = require('./utils.js').mockRequest
 const PL = require('../index')
 
 test('pushbullet error', t => {
@@ -15,7 +15,7 @@ test('pushbullet error', t => {
   const logPromise = p.log('test')
   p.originalConsole.error = err => { t.is(err.message, 'test error') }
   setTimeout(() => {
-    mockRequest.listeners.error(new Error('test error'))
+    PL._request.listeners.error(new Error('test error'))
   }, 10)
   return logPromise
 })

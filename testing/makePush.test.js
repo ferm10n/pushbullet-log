@@ -1,5 +1,5 @@
 import test from 'ava'
-import mockRequest from './utils.js'
+const mockRequest = require('./utils.js').mockRequest
 const PL = require('../index')
 PL._dns = { lookup: (domain, cb) => { cb() } }
 
@@ -12,7 +12,7 @@ test('https request', t => {
   })
 
   p.log('testTitle', 'testBody')
-  t.deepEqual(mockRequest.options, {
+  t.deepEqual(PL._request.options, {
     host: 'api.pushbullet.com',
     path: '/v2/pushes',
     port: '443',
@@ -22,10 +22,10 @@ test('https request', t => {
       'Content-Type': 'application/json'
     }
   }, 'expected https options')
-  t.true(mockRequest.end, 'request was ended')
-  t.is(typeof mockRequest.payload, 'string')
+  t.true(PL._request.ended, 'request was ended')
+  t.is(typeof PL._request.payload, 'string')
 
-  const parsedPayload = JSON.parse(mockRequest.payload)
+  const parsedPayload = JSON.parse(PL._request.payload)
   t.deepEqual(parsedPayload, {
     body: 'testBody',
     title: 'LOG: testTitle',
@@ -45,7 +45,7 @@ test('awaits completion', t => {
   const logPromise = p.log('test')
   t.is(logPromise.toString(), '[object Promise]')
   setTimeout(() => {
-    mockRequest.listeners.end()
+    PL._request.listeners.end()
   }, 10)
   return logPromise
 })
