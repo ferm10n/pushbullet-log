@@ -82,4 +82,49 @@ test('overrideConsole', t => {
   console.log('test log')
   console.warn('test warn')
   console.error('test error')
+
+  console.log = oldLog
+  console.warn = oldWarn
+  console.error = oldError
+})
+
+test('uncaughtException', async t => {
+  const oldLog = console.log
+  const oldWarn = console.warn
+  const oldError = console.error
+  const oldProcess = PL.process
+
+  const p = new PL({
+    token: 'test',
+    channel: 'test'
+  })
+
+  t.plan(6)
+  PL.process = {
+    listeners: {},
+    on: (type, handler) => {
+      PL.process.listeners[type] = handler
+    },
+    exit: code => { t.is(code, -1) }
+  }
+
+  p.overrideConsole()
+
+  p.makePush = (l, m, s) => {
+    t.is(l, 'FATALITY')
+    t.truthy(m)
+    t.is(typeof m, 'string')
+    t.is(s, 'error')
+    return Promise.resolve()
+  }
+  p.originalConsole.error = err => {
+    t.is(err.toString(), 'Error')
+  }
+
+  await PL.process.listeners['uncaughtException'](new Error())
+
+  console.log = oldLog
+  console.warn = oldWarn
+  console.error = oldError
+  PL.process = oldProcess
 })

@@ -92,11 +92,18 @@ class PushbulletLog {
     console.log = function () { self.log.apply(self, arguments) }
     console.warn = function () { self.warn.apply(self, arguments) }
     console.error = function () { self.error.apply(self, arguments) }
+
+    PushbulletLog.process.on('uncaughtException', async err => {
+      this.originalConsole.error(err)
+      await this.makePush('FATALITY', err.stack, 'error')
+      PushbulletLog.process.exit(-1)
+    })
   }
 
   log () { return this.pushConsole('LOG', [].slice.call(arguments)) }
   warn () { return this.pushConsole('WARN', [].slice.call(arguments)) }
   error () { return this.pushConsole('ERROR', [].slice.call(arguments)) }
 }
+PushbulletLog.process = process // allow override in testing
 
 module.exports = PushbulletLog
