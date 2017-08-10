@@ -1,5 +1,6 @@
 const https = require('https')
 const assert = require('assert')
+const dns = require('dns')
 
 class PushbulletLog {
   constructor (opts = {
@@ -73,17 +74,24 @@ class PushbulletLog {
       body: message,
       channel_tag: this.channels[severity.toLowerCase()]
     }
-    const req = https.request(opts, response => {
-      response.on('data', () => {}) // needed for the other events to fire for some reason
-      response.on('error', err => {
-        this.originalConsole.error(err)
+    PushbulletLog._dns.lookup('api.pushbullet.com', err => {
+      if (err) {
+        this.originalConsole.error('Pushbullet error', err)
         logResolution()
-      })
-      response.on('end', logResolution)
-    })
+      } else {
+        const req = https.request(opts, response => {
+          response.on('data', () => {}) // needed for the other events to fire for some reason
+          response.on('error', err => {
+            this.originalConsole.error(err)
+            logResolution()
+          })
+          response.on('end', logResolution)
+        })
 
-    req.write(JSON.stringify(payload))
-    req.end()
+        req.write(JSON.stringify(payload))
+        req.end()
+      }
+    })
     return logPromise
   }
 
@@ -98,5 +106,6 @@ class PushbulletLog {
   warn () { return this.pushConsole('WARN', [].slice.call(arguments)) }
   error () { return this.pushConsole('ERROR', [].slice.call(arguments)) }
 }
+PushbulletLog._dns = dns
 
 module.exports = PushbulletLog

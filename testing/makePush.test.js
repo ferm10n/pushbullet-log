@@ -4,11 +4,13 @@ import { mockRequest, freshlyRequire } from './utils.js'
 test('https request', t => {
   freshlyRequire('https').request = mockRequest
   const PL = freshlyRequire('../index')
+  PL._dns = { lookup: (domain, cb) => { cb() } }
   const p = new PL({
     token: 'testToken',
     channel: 'logChannel',
     useConsole: false
   })
+
   p.log('testTitle', 'testBody')
   t.deepEqual(mockRequest.options, {
     host: 'api.pushbullet.com',
@@ -22,6 +24,7 @@ test('https request', t => {
   }, 'expected https options')
   t.true(mockRequest.end, 'request was ended')
   t.is(typeof mockRequest.payload, 'string')
+
   const parsedPayload = JSON.parse(mockRequest.payload)
   t.deepEqual(parsedPayload, {
     body: 'testBody',
@@ -34,6 +37,7 @@ test('https request', t => {
 test('awaits completion', t => {
   freshlyRequire('https').request = mockRequest
   const PL = freshlyRequire('../index')
+  PL._dns = { lookup: (domain, cb) => { cb() } }
   const p = new PL({
     token: 'test',
     channel: 'test',
