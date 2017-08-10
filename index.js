@@ -23,7 +23,6 @@ class PushbulletLog {
 
     if (!opts.channels) opts.channels = {}
     if (opts.channel && !opts.channels.log) opts.channels.log = opts.channel
-    assert.ok(opts.channels.log, 'Log channel is required')
 
     if (!opts.channels.warn) opts.channels.warn = opts.channels.log
     if (!opts.channels.error) opts.channels.error = opts.channels.log
@@ -73,7 +72,7 @@ class PushbulletLog {
       type: 'note',
       title: title,
       body: message,
-      channel_tag: this.channels[severity.toLowerCase()]
+      channel_tag: this.channels[severity.toLowerCase()] // will be undefined if user doesn't give any channels
     }
     PushbulletLog._dns.lookup('api.pushbullet.com', err => {
       if (err) {

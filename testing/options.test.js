@@ -15,14 +15,7 @@ test('defaults', t => {
 
 test('required options', t => {
   t.notThrows(() => {
-    return new PL({
-      token: 'test',
-      channels: {
-        log: 'test',
-        warn: 'test',
-        error: 'test'
-      }
-    })
+    return new PL({ token: 'test' })
   }, 'correct options, multiple channels')
 
   t.throws(() => {
@@ -34,12 +27,6 @@ test('required options', t => {
       channel: 'test'
     })
   }, Error, 'missing token')
-
-  t.throws(() => {
-    return new PL({
-      token: 'test'
-    })
-  }, Error, 'missing channel')
 })
 
 test('channels', t => {

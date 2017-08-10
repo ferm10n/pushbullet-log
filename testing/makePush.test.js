@@ -34,11 +34,27 @@ test('https request', t => {
   })
 })
 
+test('channel_tag is not set when no channel was set', t => {
+  PL._request = mockRequest()
+  const p = new PL({
+    token: 'testToken',
+    useConsole: false
+  })
+
+  p.log('testTitle', 'testBody')
+
+  const parsedPayload = JSON.parse(PL._request.payload)
+  t.deepEqual(parsedPayload, {
+    body: 'testBody',
+    title: 'LOG: testTitle',
+    type: 'note'
+  })
+})
+
 test('awaits completion', t => {
   PL._request = mockRequest()
   const p = new PL({
     token: 'test',
-    channel: 'test',
     useConsole: false
   })
 

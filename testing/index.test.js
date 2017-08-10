@@ -2,7 +2,6 @@ import test from 'ava'
 const PL = require('../index')
 const testOpts = {
   token: 'test',
-  channel: 'test',
   useConsole: false
 }
 
@@ -63,10 +62,7 @@ test('overrideConsole', t => {
   const oldWarn = console.warn
   const oldError = console.error
 
-  const p = new PL({
-    token: 'test',
-    channel: 'test'
-  })
+  const p = new PL({ token: 'test' })
 
   t.plan(5)
 
@@ -87,3 +83,7 @@ test('overrideConsole', t => {
   console.warn = oldWarn
   console.error = oldError
 })
+
+// test('error stack', t => {
+//   const p = new PL({})
+// })

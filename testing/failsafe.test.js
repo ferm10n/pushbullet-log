@@ -7,7 +7,6 @@ test.serial('pushbullet error', t => {
   PL._request = mockRequest()
   const p = new PL({
     token: 'test',
-    channel: 'test',
     useConsole: false
   })
 
@@ -27,7 +26,6 @@ test.serial('connection error', t => {
   }
   const p = new PL({
     token: 'test',
-    channel: 'test',
     useConsole: false
   })
 
