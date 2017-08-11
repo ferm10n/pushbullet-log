@@ -107,6 +107,8 @@ class PushbulletLog {
   warn () { return this.pushConsole('WARN', [].slice.call(arguments)) }
   error () { return this.pushConsole('ERROR', [].slice.call(arguments)) }
 }
+
+// used for testing
 PushbulletLog._dns = dns
 PushbulletLog._request = https.request
 

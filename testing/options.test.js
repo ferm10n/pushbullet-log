@@ -21,12 +21,6 @@ test('required options', t => {
   t.throws(() => {
     return new PL()
   }, Error, 'no options')
-
-  t.throws(() => {
-    return new PL({
-      channel: 'test'
-    })
-  }, Error, 'missing token')
 })
 
 test('channels', t => {
