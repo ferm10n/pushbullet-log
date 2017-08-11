@@ -95,6 +95,20 @@ test('error stack', t => {
   p.error(new Error('test error'))
 })
 
-test.todo('originalConsole is static')
+test('originalConsole is static', t => {
+  const oldLog = console.log
 
-test.todo('logShutdown')
+  console.log = 1
+
+  delete require.cache[require.resolve('../index')]
+  let PL = require('../index')
+
+  const p1 = new PL(testOpts)
+  console.log = 2
+  const p2 = new PL(testOpts)
+  t.is(p1.originalConsole.log, p2.originalConsole.log)
+
+  console.log = oldLog
+  delete require.cache[require.resolve('../index')]
+  PL = require('../index')
+})

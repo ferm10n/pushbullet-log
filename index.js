@@ -2,6 +2,12 @@ const https = require('https')
 const assert = require('assert')
 const dns = require('dns')
 
+const originalConsole = {
+  log: console.log,
+  warn: console.warn,
+  error: console.error
+}
+
 class PushbulletLog {
   constructor (opts = {
     prependDate: true
@@ -11,13 +17,7 @@ class PushbulletLog {
       compact: false,
       prependDate: false
     }
-    opts = Object.assign(defaults, opts, {
-      originalConsole: {
-        log: console.log,
-        warn: console.warn,
-        error: console.error
-      }
-    })
+    opts = Object.assign(defaults, opts, { originalConsole: originalConsole })
 
     assert.ok(opts.token, 'Token is required')
 

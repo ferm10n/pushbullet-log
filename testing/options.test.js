@@ -75,24 +75,29 @@ test('useConsole', t => {
   const oldWarn = console.warn
   const oldError = console.error
 
-  console.log = l => { t.is(l, 'test log') }
-  console.warn = w => { t.is(w, 'test warn') }
-  console.error = e => { t.is(e, 'test error') }
-
   const p = new PL({
     token: 'testToken',
     channel: 'testChannel',
     useConsole: true
   })
+
+  // original console is intact
+  t.is(p.originalConsole.log, oldLog)
+  t.is(p.originalConsole.warn, oldWarn)
+  t.is(p.originalConsole.error, oldError)
+
+  // p should call original console
+  p.originalConsole = {
+    log: l => { t.is(l, 'test log') },
+    warn: w => { t.is(w, 'test warn') },
+    error: e => { t.is(e, 'test error') }
+  }
+
   p.makePush = () => {}
   t.true(p.useConsole)
   p.log('test log')
   p.warn('test warn')
   p.error('test error')
-
-  t.is(console.log, p.originalConsole.log)
-  t.is(console.warn, p.originalConsole.warn)
-  t.is(console.error, p.originalConsole.error)
 
   console.log = oldLog
   console.warn = oldWarn
