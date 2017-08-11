@@ -94,3 +94,7 @@ test('error stack', t => {
   }
   p.error(new Error('test error'))
 })
+
+test.todo('originalConsole is static')
+
+test.todo('logShutdown')
