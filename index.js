@@ -55,7 +55,12 @@ class PushbulletLog {
     }
     let messageString = messageArray.join(', ')
     if (this.prependDate) messageString = Date().toString() + '\n' + messageString
-    return this.makePush(title, messageString, severity)
+
+    const shouldPush = !this.pushOnProductionOnly ||
+      (this.pushOnProductionOnly && process.env.NODE_ENV === 'production')
+
+    if (shouldPush) return this.makePush(title, messageString, severity)
+    else return Promise.resolve()
   }
 
   makePush (title, message, severity) {

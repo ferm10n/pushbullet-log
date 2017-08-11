@@ -50,16 +50,17 @@ try {
 Here are the options you can control, and what they do:
 ```
 const opts = {
-  token: 'REQUIRED-TOKEN',  // use the one you got from pushbullet
-  useConsole: true,         // forward log/warn/error to PushbulletLog to console?
-  compact: false,           // should objects be prettyfied?
-  prependDate: false,       // should dates be added to the beginning of logs?
-  label: 'App Name'         // when set, the titles to your pushes will be prepended with this
-  channels: {               // the channels to use for log, warn, and error
+  token: 'REQUIRED-TOKEN',    // use the one you got from pushbullet
+  useConsole: true,           // forward log/warn/error to PushbulletLog to console?
+  compact: false,             // should objects be prettyfied?
+  prependDate: false,         // should dates be added to the beginning of logs?
+  label: 'App Name'           // when set, the titles to your pushes will be prepended with this
+  pushOnProductionOnly: false // when true, pushes will only be sent if NODE_ENV === 'production'
+  channels: {                 // the channels to use for log, warn, and error
     log: 'LOG-CHANNEL',
     warn: 'WARNING0-CHANNEL',
     error: 'ERROR-CHANNEL'
-  },
+  }
 }
 ```
 You do not have to set a different channel for log, warn, and error. However, `channels.log` must be set at least, and each member of `channels` you don't set will default to `channels.log`

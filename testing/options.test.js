@@ -113,4 +113,21 @@ test('label', t => {
   p.log('test log')
 })
 
-test.todo('production only')
+test('production only', t => {
+  t.plan(1)
+  const oldRequest = PL._request
+  const oldDns = PL._dns
+  PL._request = () => { t.fail('should not have happened') }
+  PL._dns = { lookup: (name, cb) => { cb() } }
+  const p = new PL({
+    token: 'testToken',
+    pushOnProductionOnly: true
+  })
+  p.originalConsole.log = () => {
+    t.pass()
+  }
+  p.log('test')
+
+  PL._request = oldRequest
+  PL._dns = oldDns
+})
