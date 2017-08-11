@@ -99,6 +99,18 @@ test('useConsole', t => {
   console.error = oldError
 })
 
-test.todo('label')
+test('label', t => {
+  t.plan(2)
+  const p = new PL({
+    token: 'testToken',
+    useConsole: false,
+    label: 'TestApp'
+  })
+  t.is(p.label, 'TestApp')
+  p.makePush = (title, message) => {
+    t.is(title, 'TestApp LOG: test log')
+  }
+  p.log('test log')
+})
 
 test.todo('production only')

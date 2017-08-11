@@ -36,11 +36,13 @@ class PushbulletLog {
     if (this.useConsole) {
       this.originalConsole[severity.toLowerCase()].apply(console, thingsToLog)
     }
-    let title = severity + ': '
+    let title = ''
     let messageArray = []
 
     if (thingsToLog.length === 0) return
 
+    if (this.label) title += this.label + ' '
+    title += severity + ': '
     if (typeof thingsToLog[0] === 'string') title += thingsToLog.shift()
 
     const spacing = this.compact ? '' : '  '
