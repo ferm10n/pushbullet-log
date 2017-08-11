@@ -1,7 +1,7 @@
 {
   "name": "pushbullet-log",
-  "version": "0.9.1",
-  "description": "Receive console messages from nodejs as push notifications via pushbullet",
+  "version": "1.0.0",
+  "description": "Receive alerts and console messages as push notifications",
   "main": "index.js",
   "scripts": {
     "test": "standard && ava && nyc --statements 100 --branches 100 --functions 100 --lines 100 ava",
@@ -16,7 +16,10 @@
     "notification",
     "console",
     "log",
-    "pushbullet"
+    "pushbullet",
+    "monitor",
+    "health",
+    "push"
   ],
   "author": "John Sanders <me@johnsanders.io>",
   "license": "MIT",

@@ -4,9 +4,9 @@
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 [![Dependencies](https://david-dm.org/ferm10n/pushbullet-log/status.svg)](https://david-dm.org/ferm10n/pushbullet-log)
 
-**Receive console messages from your nodejs apps as push notifications**
+**Receive alerts and console messages as push notifications**
 
-Give your nodejs applications a voice by connecting it to Pushbullet. Never miss an error, crash, or console.log. Get alerts delivered to Android, iOS, desktop and more in real time!
+Give your nodejs applications a voice by connecting it to Pushbullet. Never miss an error, crash, or log message. Get alerts delivered to Android, iOS, desktop and more in real time! Useful for monitoring the health and status of your app.
 
 # Installation
 pushbullet-log was written for Node.js 8+
@@ -15,7 +15,7 @@ pushbullet-log was written for Node.js 8+
 
 # Usage
 ## Setup
-To get setup receiving real time status logs from your application, you'll need to
+...is easy! To start receiving real time status logs from your application, you'll need to
 - Create an account with [Pushbullet](https://www.pushbullet.com/) (if you don't already have one)
 - Get your API access token from the [Account Settings](https://www.pushbullet.com/#settings/account) page
 - *(Optional)* Create a [channel](https://www.pushbullet.com/my-channel) (or channels, if you wanna get fancy). I usually like one for stdout, and stderr. The tag field is what you want to use in your app
@@ -82,18 +82,20 @@ process.on('uncaughtException', async err => {
 })
 
 // catch SIGINT and SIGHUP
-function shutdown() {
-  await pbl.log('App is shutting down')
-  process.exit(0)
-}
 require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 }).on('SIGINT', () => { process.emit('SIGINT') })
 process.on('SIGINT', () => { process.emit('SIGHUP') }) // treat SIGINT as SIGHUP
-process.on('SIGHUP', shutdown)
+process.on('SIGHUP', async () => {
+  await pbl.log('App is shutting down')
+  process.exit(0)
+})
 ```
 Calls to log/warn/error returns a promise which resolves when the push is sent, or if the push failed (it resolves in either case).
+
+### Bypass pushing console messages
+After calling `overrideConsole()`, you might want to use the console without pushing to pushbullet. To do this, you can do: `pbl.originalConsole.log('log message not pushed')`. The values of `originalConsole` were the original values of `console` when you created the instance of pushbullet-log.
 
 # Limitations
 - Obviously since it connects with pushbullet, an internet connection is required. If there is none present when log/warn/error is called, then a connection error will be written to console.error and the default console is used.
