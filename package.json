@@ -1,6 +1,6 @@
 {
   "name": "pushbullet-log",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Receive console messages from nodejs as push notifications via pushbullet",
   "main": "index.js",
   "scripts": {
